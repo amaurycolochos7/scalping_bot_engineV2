@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Configuración sensible
+.env
+*.log
+
+# Datos de entrenamiento (muy pesados)
+data/historical/*.csv
+data/features/*.csv
+
+# Mantener estructura de carpetas
+!data/historical/.gitkeep
+!data/features/.gitkeep
+
+# Models (opcionales - descomentar si quieres versionar el modelo)
+# models/*.json
+# models/*.pkl
+
+# Database
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Señales y logs
+signals_history.json
+logs/*.log
+
+# Temporales
+*.tmp
+*.bak

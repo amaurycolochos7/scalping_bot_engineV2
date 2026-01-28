@@ -1,0 +1,32 @@
+# Scalping Engine V2 - Dependencies
+
+# Binance API
+python-binance==1.0.19
+ccxt==4.2.25
+
+# Análisis Técnico
+pandas==2.1.4
+numpy==1.26.2
+ta==0.11.0
+
+# Telegram
+python-telegram-bot==20.7
+
+# Machine Learning (IA)
+xgboost==2.0.3
+scikit-learn==1.3.2
+joblib==1.3.2
+
+# Utilidades
+python-dotenv==1.0.0
+requests==2.31.0
+aiohttp==3.9.1
+
+# Async
+asyncio==3.4.3
+
+# Database (opcional para tracking)
+sqlalchemy==2.0.25
+
+# Logging
+colorlog==6.8.0
