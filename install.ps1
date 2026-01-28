@@ -3,10 +3,10 @@
 # Windows Server AWS - Scalping Engine V2
 # ============================================
 
-Write-Host "╔══════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║  SCALPING ENGINE V2 - AWS SETUP          ║" -ForegroundColor Yellow
-Write-Host "║  Instalación Completa con IA             ║" -ForegroundColor Yellow
-Write-Host "╚══════════════════════════════════════════╝" -ForegroundColor Cyan
+Write-Host "==========================================" -ForegroundColor Cyan
+Write-Host "  SCALPING ENGINE V2 - AWS SETUP          " -ForegroundColor Yellow
+Write-Host "  Instalacion Completa con IA             " -ForegroundColor Yellow
+Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 
 # Variables
@@ -17,10 +17,10 @@ $PROJECT_DIR = "C:\ScalpingEngineV2"
 Write-Host "[1/7] Verificando Python $PYTHON_VERSION..." -ForegroundColor Green
 try {
     $pythonVer = python --version 2>&1
-    Write-Host "   ✅ $pythonVer encontrado" -ForegroundColor White
+    Write-Host "   OK: $pythonVer encontrado" -ForegroundColor White
 }
 catch {
-    Write-Host "   ❌ Python no instalado" -ForegroundColor Red
+    Write-Host "   ERROR: Python no instalado" -ForegroundColor Red
     Write-Host "   Descargando Python..." -ForegroundColor Yellow
     
     # Descargar Python
@@ -130,20 +130,21 @@ foreach ($dir in $dirs) {
 }
 
 Write-Host ""
-Write-Host "╔══════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║  ✅ INSTALACIÓN COMPLETADA               ║" -ForegroundColor Green
-Write-Host "╚══════════════════════════════════════════╝" -ForegroundColor Cyan
+Write-Host "==========================================" -ForegroundColor Cyan
+Write-Host "  INSTALACION COMPLETADA                  " -ForegroundColor Green
+Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "📋 Próximos pasos:" -ForegroundColor Yellow
+Write-Host "Proximos pasos:" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "1️⃣  ENTRENAR LA IA (5-7 horas):" -ForegroundColor White
+Write-Host ""
+Write-Host "1. ENTRENAR LA IA (5-7 horas):" -ForegroundColor White
 Write-Host "   .\train_ia.ps1" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "2️⃣  EJECUTAR EL BOT:" -ForegroundColor White
+Write-Host "2. EJECUTAR EL BOT:" -ForegroundColor White
 Write-Host "   python main.py" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "3️⃣  PROBAR CON 1 CRIPTO:" -ForegroundColor White
+Write-Host "3. PROBAR CON 1 CRIPTO:" -ForegroundColor White
 Write-Host "   python test_single.py BTCUSDT" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "📁 Ubicación: $PROJECT_DIR" -ForegroundColor Gray
+Write-Host "Ubicacion: $PROJECT_DIR" -ForegroundColor Gray
 Write-Host ""
