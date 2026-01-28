@@ -1,11 +1,11 @@
 # ============================================
-# SCRIPT DE INSTALACIÓN COMPLETA
+# COMPLETE INSTALLATION SCRIPT
 # Windows Server AWS - Scalping Engine V2
 # ============================================
 
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host "  SCALPING ENGINE V2 - AWS SETUP          " -ForegroundColor Yellow
-Write-Host "  Instalacion Completa con IA             " -ForegroundColor Yellow
+Write-Host "  Complete Installation with AI           " -ForegroundColor Yellow
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -13,138 +13,137 @@ Write-Host ""
 $PYTHON_VERSION = "3.11"
 $PROJECT_DIR = "C:\ScalpingEngineV2"
 
-# 1. Verificar Python
-Write-Host "[1/7] Verificando Python $PYTHON_VERSION..." -ForegroundColor Green
+# 1. Check Python
+Write-Host "[1/7] Checking Python $PYTHON_VERSION..." -ForegroundColor Green
 try {
     $pythonVer = python --version 2>&1
-    Write-Host "   OK: $pythonVer encontrado" -ForegroundColor White
+    Write-Host "   OK: $pythonVer found" -ForegroundColor White
 }
 catch {
-    Write-Host "   ERROR: Python no instalado" -ForegroundColor Red
-    Write-Host "   Descargando Python..." -ForegroundColor Yellow
+    Write-Host "   ERROR: Python not installed" -ForegroundColor Red
+    Write-Host "   Downloading Python..." -ForegroundColor Yellow
     
-    # Descargar Python
+    # Download Python
     $pythonUrl = "https://www.python.org/ftp/python/3.11.7/python-3.11.7-amd64.exe"
     $pythonInstaller = "$env:TEMP\python-installer.exe"
     
     Invoke-WebRequest -Uri $pythonUrl -OutFile $pythonInstaller
     
-    # Instalar Python (silencioso)
-    Write-Host "   Instalando Python..." -ForegroundColor Yellow
+    # Install Python (silent)
+    Write-Host "   Installing Python..." -ForegroundColor Yellow
     Start-Process -FilePath $pythonInstaller -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
     
-    Write-Host "   ✅ Python instalado" -ForegroundColor Green
+    Write-Host "   OK: Python installed" -ForegroundColor Green
 }
 
-# 2. Verificar Git
+# 2. Check Git
 Write-Host ""
-Write-Host "[2/7] Verificando Git..." -ForegroundColor Green
+Write-Host "[2/7] Checking Git..." -ForegroundColor Green
 try {
     $gitVer = git --version 2>&1
-    Write-Host "   ✅ $gitVer encontrado" -ForegroundColor White
+    Write-Host "   OK: $gitVer found" -ForegroundColor White
 }
 catch {
-    Write-Host "   ❌ Git no instalado" -ForegroundColor Red
-    Write-Host "   Descargando Git..." -ForegroundColor Yellow
+    Write-Host "   ERROR: Git not installed" -ForegroundColor Red
+    Write-Host "   Downloading Git..." -ForegroundColor Yellow
     
-    # Descargar Git
+    # Download Git
     $gitUrl = "https://github.com/git-for-windows/git/releases/download/v2.43.0.windows.1/Git-2.43.0-64-bit.exe"
     $gitInstaller = "$env:TEMP\git-installer.exe"
     
     Invoke-WebRequest -Uri $gitUrl -OutFile $gitInstaller
     
-    # Instalar Git
-    Write-Host "   Instalando Git..." -ForegroundColor Yellow
+    # Install Git
+    Write-Host "   Installing Git..." -ForegroundColor Yellow
     Start-Process -FilePath $gitInstaller -ArgumentList "/SILENT" -Wait
     
-    Write-Host "   ✅ Git instalado" -ForegroundColor Green
+    Write-Host "   OK: Git installed" -ForegroundColor Green
 }
 
-# 3. Clonar repositorio
+# 3. Clone repository
 Write-Host ""
-Write-Host "[3/7] Clonando repositorio..." -ForegroundColor Green
-Write-Host "   📁 Destino: $PROJECT_DIR" -ForegroundColor White
+Write-Host "[3/7] Cloning repository..." -ForegroundColor Green
+Write-Host "   Destination: $PROJECT_DIR" -ForegroundColor White
 
 if (Test-Path $PROJECT_DIR) {
-    Write-Host "   ⚠️ El directorio ya existe. Actualizando..." -ForegroundColor Yellow
+    Write-Host "   WARNING: Directory exists. Updating..." -ForegroundColor Yellow
     Set-Location $PROJECT_DIR
     git pull origin main
 }
 else {
-    Write-Host "   Ingresa la URL de tu repositorio Git:" -ForegroundColor Yellow
+    Write-Host "   Enter your Git repository URL:" -ForegroundColor Yellow
     $repoUrl = Read-Host "   URL"
     
     git clone $repoUrl $PROJECT_DIR
     Set-Location $PROJECT_DIR
 }
 
-Write-Host "   ✅ Repositorio listo" -ForegroundColor Green
+Write-Host "   OK: Repository ready" -ForegroundColor Green
 
-# 4. Crear entorno virtual
+# 4. Create virtual environment
 Write-Host ""
-Write-Host "[4/7] Creando entorno virtual Python..." -ForegroundColor Green
+Write-Host "[4/7] Creating Python virtual environment..." -ForegroundColor Green
 python -m venv venv
-Write-Host "   ✅ Entorno virtual creado" -ForegroundColor Green
+Write-Host "   OK: Virtual environment created" -ForegroundColor Green
 
-# 5. Activar e instalar dependencias
+# 5. Activate and install dependencies
 Write-Host ""
-Write-Host "[5/7] Instalando dependencias..." -ForegroundColor Green
+Write-Host "[5/7] Installing dependencies..." -ForegroundColor Green
 & .\venv\Scripts\Activate.ps1
 
-Write-Host "   Actualizando pip..." -ForegroundColor White
+Write-Host "   Updating pip..." -ForegroundColor White
 python -m pip install --upgrade pip --quiet
 
-Write-Host "   Instalando paquetes (esto puede tardar 5-10 minutos)..." -ForegroundColor White
+Write-Host "   Installing packages (this may take 5-10 minutes)..." -ForegroundColor White
 pip install -r requirements.txt --quiet
 
-Write-Host "   ✅ Todas las dependencias instaladas" -ForegroundColor Green
+Write-Host "   OK: All dependencies installed" -ForegroundColor Green
 
-# 6. Configurar variables de entorno
+# 6. Configure environment variables
 Write-Host ""
-Write-Host "[6/7] Configurando variables de entorno..." -ForegroundColor Green
+Write-Host "[6/7] Configuring environment variables..." -ForegroundColor Green
 
 if (Test-Path ".env") {
-    Write-Host "   ⚠️ Archivo .env ya existe" -ForegroundColor Yellow
-    $overwrite = Read-Host "   ¿Quieres configurar Telegram Chat ID ahora? (s/n)"
+    Write-Host "   WARNING: .env file exists" -ForegroundColor Yellow
+    $overwrite = Read-Host "   Configure Telegram Chat ID now? (y/n)"
     
-    if ($overwrite -eq "s") {
-        $chatId = Read-Host "   Ingresa tu Telegram Chat ID"
+    if ($overwrite -eq "y") {
+        $chatId = Read-Host "   Enter your Telegram Chat ID"
         (Get-Content .env) -replace 'TELEGRAM_CHAT_ID=.*', "TELEGRAM_CHAT_ID=$chatId" | Set-Content .env
-        Write-Host "   ✅ Chat ID actualizado" -ForegroundColor Green
+        Write-Host "   OK: Chat ID updated" -ForegroundColor Green
     }
 }
 else {
-    Write-Host "   ❌ Archivo .env no encontrado" -ForegroundColor Red
+    Write-Host "   ERROR: .env file not found" -ForegroundColor Red
 }
 
-# 7. Crear directorios necesarios
+# 7. Create necessary directories
 Write-Host ""
-Write-Host "[7/7] Creando estructura de directorios..." -ForegroundColor Green
+Write-Host "[7/7] Creating directory structure..." -ForegroundColor Green
 $dirs = @("data", "data\historical", "data\features", "models", "logs")
 
 foreach ($dir in $dirs) {
     if (-not (Test-Path $dir)) {
         New-Item -ItemType Directory -Path $dir -Force | Out-Null
-        Write-Host "   ✅ Creado: $dir" -ForegroundColor White
+        Write-Host "   OK: Created $dir" -ForegroundColor White
     }
 }
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor Cyan
-Write-Host "  INSTALACION COMPLETADA                  " -ForegroundColor Green
+Write-Host "  INSTALLATION COMPLETED                  " -ForegroundColor Green
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Proximos pasos:" -ForegroundColor Yellow
+Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host ""
-Write-Host ""
-Write-Host "1. ENTRENAR LA IA (5-7 horas):" -ForegroundColor White
+Write-Host "1. TRAIN THE AI (5-7 hours):" -ForegroundColor White
 Write-Host "   .\train_ia.ps1" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "2. EJECUTAR EL BOT:" -ForegroundColor White
+Write-Host "2. RUN THE BOT:" -ForegroundColor White
 Write-Host "   python main.py" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "3. PROBAR CON 1 CRIPTO:" -ForegroundColor White
+Write-Host "3. TEST WITH 1 CRYPTO:" -ForegroundColor White
 Write-Host "   python test_single.py BTCUSDT" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Ubicacion: $PROJECT_DIR" -ForegroundColor Gray
+Write-Host "Location: $PROJECT_DIR" -ForegroundColor Gray
 Write-Host ""
