@@ -31,9 +31,9 @@ def run_scanner():
 def run_telegram_bot():
     """Ejecuta el bot de Telegram"""
     from telegram import Update
-    from telegram.ext import Application, CommandHandler, MessageHandler, filters
+    from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, filters
     from config import Config
-    from bot_telegram import start_command, status_command, handle_message
+    from bot_telegram import start_command, handle_message, handle_callback
     
     logger.info("🤖 Iniciando Bot de Telegram...")
     
@@ -46,7 +46,8 @@ def run_telegram_bot():
     
     # Agregar handlers
     app.add_handler(CommandHandler("start", start_command))
-    app.add_handler(CommandHandler("status", status_command))
+    app.add_handler(CommandHandler("menu", start_command))
+    app.add_handler(CallbackQueryHandler(handle_callback))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
     logger.info("✅ Bot de Telegram listo")
