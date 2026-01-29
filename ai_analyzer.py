@@ -59,7 +59,6 @@ class AIAnalyzer:
         Returns:
             dict con señal, confianza, y razones detalladas
         """
-        logger.info(f"🔍 Analizando {symbol}...")
         
         # Obtener precio actual
         try:
@@ -159,10 +158,6 @@ class AIAnalyzer:
             else:
                 result['tp'] = current_price * (1 - Config.TP_PERCENTAGE / 100)
                 result['sl'] = current_price * (1 + Config.SL_PERCENTAGE / 100)
-            
-            logger.info(f"✅ {symbol}: {signal} con {confidence}% confianza")
-        else:
-            logger.info(f"⏳ {symbol}: Sin señal clara (confianza {confidence}%)")
         
         return result
     

@@ -189,7 +189,10 @@ class FuturesAnalyzer:
             }
             
         except Exception as e:
-            logger.error(f"Error obteniendo long/short ratio: {e}")
+            # 403 = sin permisos VIP, ignorar silenciosamente
+            if '403' in str(e) or 'Forbidden' in str(e):
+                return None
+            logger.debug(f"Long/short ratio no disponible: {e}")
             return None
     
     def get_full_futures_analysis(self, symbol: str) -> dict:
