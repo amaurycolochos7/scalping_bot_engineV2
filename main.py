@@ -30,7 +30,8 @@ def run_scanner():
 
 def run_telegram_bot():
     """Ejecuta el bot de Telegram"""
-    from telegram.ext import Application, CommandHandler, MessageHandler, filters, Update
+    from telegram import Update
+    from telegram.ext import Application, CommandHandler, MessageHandler, filters
     from config import Config
     from bot_telegram import start_command, status_command, handle_message
     
