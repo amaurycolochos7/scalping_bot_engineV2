@@ -1,10 +1,10 @@
 """
-Escáner principal que analiza todas las criptomonedas en tiempo real
+Escáner principal con IA avanzada
+Analiza todas las criptomonedas de Futures en tiempo real
 """
 import time
 import logging
-from binance_client import BinanceClient
-from analyzer import MultiTimeframeAnalyzer
+from ai_analyzer import AIAnalyzer
 from signal_generator import SignalGenerator
 from telegram_notifier import TelegramNotifier
 from signal_tracker import SignalTracker
@@ -17,32 +17,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class CryptoScanner:
     def __init__(self):
-        """Inicializa el escáner"""
-        logger.info("🚀 Iniciando Scalping Engine V2...")
+        """Inicializa el escáner con IA"""
+        logger.info("🚀 Iniciando Scalping Engine V2 con IA...")
         
         # Validar configuración
         Config.validate()
         
         # Inicializar componentes
-        self.binance = BinanceClient()
-        self.analyzer = MultiTimeframeAnalyzer(self.binance)
+        self.analyzer = AIAnalyzer()
         self.notifier = TelegramNotifier()
         self.tracker = SignalTracker()
         
-        # Obtener lista de pares a monitorear
-        self.pairs = []
-        
-        logger.info("✅ Escáner inicializado correctamente")
+        logger.info("✅ Escáner con IA inicializado correctamente")
     
     def start(self):
-        """Inicia el escaneo continuo"""
-        logger.info("🔍 Iniciando escaneo de mercado...")
-        
-        # Obtener pares
-        self.pairs = self.binance.get_all_usdt_pairs()
-        logger.info(f"📊 Monitoreando {len(self.pairs)} pares")
+        """Inicia el escaneo continuo con IA"""
+        logger.info("🔍 Iniciando escaneo con IA...")
         
         # Mostrar estadísticas
         stats = self.tracker.get_stats()
@@ -54,95 +47,81 @@ class CryptoScanner:
             try:
                 scan_count += 1
                 logger.info(f"\n{'='*60}")
-                logger.info(f"🔄 Escaneo #{scan_count} - {len(self.pairs)} pares")
+                logger.info(f"🔄 Escaneo #{scan_count} con IA")
                 logger.info(f"{'='*60}")
                 
-                signals_found = 0
+                # Escanear todos los pares con IA
+                signals = self.analyzer.scan_all_pairs()
                 
-                # Analizar cada par
-                for i, symbol in enumerate(self.pairs, 1):
-                    try:
-                        # Mostrar progreso cada 50 pares
-                        if i % 50 == 0:
-                            logger.info(f"⏳ Progreso: {i}/{len(self.pairs)} pares analizados...")
-                        
-                        # Verificar si podemos enviar señal para este símbolo
-                        if not self.tracker.can_send_signal(symbol):
-                            continue
-                        
-                        # Analizar el símbolo
-                        analysis = self.analyzer.analyze_symbol(symbol)
-                        
-                        if not analysis:
-                            continue
-                        
-                        # Si hay señal confirmada
-                        if analysis['confirmed'] and analysis['signal']:
-                            signals_found += 1
-                            logger.info(f"🎯 SEÑAL ENCONTRADA: {symbol} {analysis['signal']}")
-                            
-                            # Generar mensaje
-                            message = SignalGenerator.generate_message(analysis)
-                            
-                            # Enviar notificación
-                            self.notifier.send_signal_sync(message)
-                            
-                            # Registrar señal
-                            self.tracker.register_signal(
-                                symbol,
-                                analysis['signal'],
-                                analysis['price']
-                            )
-                        
-                        # Pequeña pausa para no saturar la API
-                        time.sleep(0.1)
-                        
-                    except Exception as e:
-                        logger.error(f"❌ Error analizando {symbol}: {e}")
+                signals_sent = 0
+                for analysis in signals:
+                    symbol = analysis['symbol']
+                    
+                    # Verificar cooldown
+                    if not self.tracker.can_send_signal(symbol):
                         continue
+                    
+                    # Solo señales con buena confianza
+                    if analysis['confidence'] >= 70:
+                        logger.info(f"🎯 SEÑAL: {symbol} {analysis['signal']} ({analysis['confidence']}%)")
+                        
+                        # Generar mensaje
+                        message = SignalGenerator.generate_message(analysis)
+                        
+                        # Enviar
+                        self.notifier.send_signal_sync(message)
+                        
+                        # Registrar
+                        self.tracker.register_signal(
+                            symbol,
+                            analysis['signal'],
+                            analysis['price']
+                        )
+                        
+                        signals_sent += 1
+                        
+                        # Pausa entre señales
+                        time.sleep(1)
                 
                 logger.info(f"\n✅ Escaneo #{scan_count} completado")
-                logger.info(f"🎯 Señales encontradas: {signals_found}")
+                logger.info(f"🎯 Señales enviadas: {signals_sent}")
                 logger.info(f"⏰ Próximo escaneo en {Config.SCAN_INTERVAL_SECONDS}s...\n")
                 
-                # Esperar antes del próximo escaneo
                 time.sleep(Config.SCAN_INTERVAL_SECONDS)
                 
             except KeyboardInterrupt:
                 logger.info("\n\n⛔ Deteniendo escáner...")
                 break
             except Exception as e:
-                logger.error(f"❌ Error en el loop principal: {e}")
+                logger.error(f"❌ Error en el loop: {e}")
                 logger.info("⏰ Reintentando en 10 segundos...")
                 time.sleep(10)
         
         logger.info("👋 Escáner detenido")
     
-    def scan_single(self, symbol):
-        """
-        Escanea un solo símbolo (útil para testing)
-        
-        Args:
-            symbol: Símbolo a analizar (ej: BTCUSDT)
-        """
-        logger.info(f"🔍 Analizando {symbol}...")
+    def scan_single(self, symbol: str):
+        """Analiza un solo símbolo"""
+        logger.info(f"🔍 Analizando {symbol} con IA...")
         
         analysis = self.analyzer.analyze_symbol(symbol)
         
         if not analysis:
             logger.error(f"❌ No se pudo analizar {symbol}")
-            return
+            return None
         
         # Mostrar resultado
-        if analysis['confirmed'] and analysis['signal']:
-            message = SignalGenerator.generate_message(analysis)
-            print("\n" + "="*60)
-            print("🎯 SEÑAL ENCONTRADA:")
-            print("="*60)
-            print(message)
-            print("="*60 + "\n")
-        else:
-            logger.info(f"ℹ️ No hay señal confirmada para {symbol}")
-            logger.info(f"   4H: {analysis['analysis_4h']['trend']}")
-            logger.info(f"   1H: {analysis['analysis_1h']['trend']}")
-            logger.info(f"   15m: {analysis['analysis_15m']['consecutive_count']} velas consecutivas")
+        print(f"\n{'='*60}")
+        print(f"📊 ANÁLISIS DE {symbol}")
+        print(f"{'='*60}")
+        print(f"💰 Precio: ${analysis['price']:,.4f}")
+        print(f"📈 Señal: {analysis['signal'] or 'NINGUNA'}")
+        print(f"📊 Confianza: {analysis['confidence']}%")
+        
+        if analysis['reasons']:
+            print(f"\n¿Por qué?")
+            for r in analysis['reasons']:
+                print(f"  {r}")
+        
+        print(f"{'='*60}\n")
+        
+        return analysis
