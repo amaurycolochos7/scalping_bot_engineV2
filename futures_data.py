@@ -65,7 +65,8 @@ class FuturesAnalyzer:
             }
             
         except Exception as e:
-            logger.error(f"Error obteniendo funding rate: {e}")
+            if '403' not in str(e) and 'Forbidden' not in str(e):
+                logger.debug(f"Funding rate no disponible: {e}")
             return None
     
     def get_open_interest(self, symbol: str) -> dict:
@@ -129,7 +130,8 @@ class FuturesAnalyzer:
             }
             
         except Exception as e:
-            logger.error(f"Error obteniendo open interest: {e}")
+            if '403' not in str(e) and 'Forbidden' not in str(e):
+                logger.debug(f"Open interest no disponible: {e}")
             return None
     
     def get_long_short_ratio(self, symbol: str) -> dict:
