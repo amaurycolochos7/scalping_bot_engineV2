@@ -20,7 +20,7 @@ class Config:
     
     # Configuración de análisis
     MIN_VOLUME_24H = int(os.getenv('MIN_VOLUME_24H', 5000000))  # $5M
-    MAX_CRYPTOS_TO_MONITOR = int(os.getenv('MAX_CRYPTOS_TO_MONITOR', 600))
+    MAX_CRYPTOS_TO_MONITOR = int(os.getenv('MAX_CRYPTOS_TO_MONITOR', 0))  # 0 = SIN LIMITE, todas
     SCAN_INTERVAL_SECONDS = int(os.getenv('SCAN_INTERVAL_SECONDS', 60))
     
     # Timeframes

@@ -66,11 +66,16 @@ class BinanceClient:
             
             logger.info(f"✅ {len(filtered)} pares con volumen > ${Config.MIN_VOLUME_24H:,}")
             
-            return sorted(filtered[:Config.MAX_CRYPTOS_TO_MONITOR])
+            # Solo limitar si hay un límite configurado (0 = sin límite)
+            if Config.MAX_CRYPTOS_TO_MONITOR > 0:
+                return sorted(filtered[:Config.MAX_CRYPTOS_TO_MONITOR])
+            return sorted(filtered)
             
         except Exception as e:
             logger.error(f"❌ Error filtrando por volumen: {e}")
-            return pairs[:Config.MAX_CRYPTOS_TO_MONITOR]
+            if Config.MAX_CRYPTOS_TO_MONITOR > 0:
+                return pairs[:Config.MAX_CRYPTOS_TO_MONITOR]
+            return pairs
     
     def get_klines(self, symbol, interval, limit=10):
         """
